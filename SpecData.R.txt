@@ -1,0 +1,92 @@
+# R code for training class programming assignment
+#   reading in 001-332 .csv files with data and performing some simple stat summaries
+#
+#
+#   example line below reads in the 5th csv file into a data frame with names of Date sulfate nitrate ID
+#               Date            sulfate  nitrate   ID
+#               2003-01-01      NA       NA         5
+
+# ex5 <- read.table("005.csv", header=TRUE, sep=",")
+
+#  code will need to concatenate 0 or 00 to the loop variable used to sequence thru the requested input files
+#  based on the value of i.  like:  If i < 9 then fn = concat("00"&i&".csv") else if i < 99 
+#    fn = concat("0"&i&".csv") else fn=concat(i&".csv").  Readtable statement in loop is read.table(fn,header=True,Sep=",")
+#  
+#   Need to find code which concatenates files read into same data frame.  
+#     files <- list.files(pattern = "\\.csv$")
+
+#  #temperary data frame to load the contents on the current file
+#  temp_df <- data.frame(ModelName = character(), Object = character(),stringsAsFactors = F)
+#
+#  #reading each file within the range and append them to create one file
+#  for (i in 1:length(files)){
+#   #read the file
+#    currentFile = read.csv(files[i])
+#
+#     #Append the current file
+#   temp_df = rbind(temp_df, currentFile)    
+# }
+#  
+#   Use mean(x,na.rm=TRUE) to get the mean
+#
+#
+directory <- c("C:\\users\\SReeves155352\\Documents\\R\\Training Course\\rprog_data_specdata\\specdata")
+# Why doesn't the line above work.  the Error message '\U' used without hex digits ...  That means nothing and 
+# now is consuming time to figure out little syntax crap instead of progressing with this course
+# Need to have a different approach when just turning over a little instruction into go program this 
+# and knowing \\ instead of \, it seems that is a very common issue but required too much effort to find out
+# the simple instruction was not taken.  R was written for unix ? - may need to keep that in mind....
+
+
+df8 <- data.frame()
+
+
+pollutantmean <- function(directory, pollutant, id=1:332)  
+{
+filelist = list()
+df8 <- data.frame(Date=as.Date(character()),
+                    Sulfate=double(),
+                    Nitrate=double(),
+                    ID=integer())
+j <- 1
+
+	for (i in id ) 
+ 
+	{
+		if (i < 10 ) 
+			{
+			  fn <- paste0(directory,"/00",i,".csv")
+			}
+			else if (i < 100) 
+			{
+				fn <- paste0(directory,"/0",i,".csv")
+			}
+			else 
+			{
+				fn <- paste0(directory,"/",i,".csv")
+			}
+		
+		CurrentFile <- read.table(fn, header=TRUE, sep=",")
+#
+#  			Append Current File to data frame 
+#	
+		CurrentFile$j <- j
+		filelist[[j]] <- CurrentFile 
+
+# tried this and didn't work		df8 <-rbind(df8, CurrentFile)	
+
+# increment list counter
+
+		j <- j +1	
+	}
+ 
+	df8 = do.call(rbind, filelist)
+
+        if (pollutant == "sulfate") {
+	    mean(df8$sulfate, na.rm=TRUE)
+ 	}
+	else {
+	    mean(df8$nitrate, na.rm=TRUE)
+	}
+
+}
