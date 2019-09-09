@@ -1,4 +1,7 @@
 # R code for training class programming assignment
+# Adding comments to this file while in the GitHub but this is no good as there is no running of the R code 
+#     no validation just new edits.  No connection with what is on my desktop
+#
 #   reading in 001-332 .csv files with data and performing some simple stat summaries
 #
 #
