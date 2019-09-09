@@ -1,0 +1,71 @@
+#   reading in 001-332 .csv files with data and performing some simple stat summaries
+#
+#
+#   example line below reads in the 5th csv file into a data frame with names of Date sulfate nitrate ID
+#               Date            sulfate  nitrate   ID
+#               2003-01-01      NA       NA         5
+
+# ex5 <- read.table("005.csv", header=TRUE, sep=",")
+
+
+
+directory <- c("C:\\users\\SReeves155352\\Documents\\R\\Training Course\\rprog_data_specdata\\specdata")
+
+
+
+corr <- function(directory, threshold=0, id=1:332 ) 
+{
+	filelist = list()
+	k <- 1
+	
+	for (i in id) 
+	{
+#                  get the right name structure for the filename 
+
+		if (i < 10 ) 
+			{
+			  fn <- paste0(directory,"/00",i,".csv")
+			}
+			else if (i < 100) 
+			{
+				fn <- paste0(directory,"/0",i,".csv")
+			}
+			else 
+			{
+				fn <- paste0(directory,"/",i,".csv")
+			}
+		
+		CurrentFile <- read.table(fn, header=TRUE, sep=",")
+		
+#
+#  			Append Current File to data frame 
+#	
+# don't need 		df <-rbind(df, CurrentFile)	
+		
+	both <- CurrentFile$sulfate + CurrentFile$nitrate
+	nobsi <- length(both) - sum(is.na(both))
+
+	if (nobsi > threshold) 
+	{
+	
+	cor_id <- cor(CurrentFile$nitrate,CurrentFile$sulfate, use="pairwise.complete.obs")
+	CurrentCor <- data.frame(id=i, cor_id, nobsi)
+	CurrentCor$k <- k
+
+	
+	filelist[[k]] <- CurrentCor
+	k <- k +1
+	}
+
+	
+
+# didnt work 	dfObs[j] <-rbind(CurrentObs)	
+
+		
+	}		
+	
+
+CorStats = do.call(rbind, filelist)
+
+CorStats$cor_id 
+}
